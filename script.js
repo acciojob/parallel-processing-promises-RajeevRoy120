@@ -1,5 +1,6 @@
 const output = document.getElementById("output");
 const btn = document.getElementById("download-images-button");
+
 const images = [
   { url: "https://picsum.photos/id/237/200/300" },
   { url: "https://picsum.photos/id/238/200/300" },
@@ -10,10 +11,8 @@ const images = [
 function loadImage(url) {
   return new Promise((resolve, reject) => {
     const img = new Image();
-
-    img.onload = () => resolve(img); // ✅ Resolve on successful load
-    img.onerror = () => reject(`Failed to load image: ${url}`); // ❌ Reject on failure
-
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(`Failed to load image: ${url}`);
     img.src = url;
   });
 }
@@ -23,14 +22,14 @@ async function downloadImages() {
   // ✅ Clear previous output
   output.innerHTML = "";
 
-  // ✅ Create loading spinner
+  // ✅ Create and display loading spinner
   const loading = document.createElement("div");
   loading.id = "loading";
   loading.innerText = "Loading...";
   output.appendChild(loading);
 
   try {
-    // ✅ Use Promise.all() to load all images
+    // ✅ Use Promise.all to load all images in parallel
     const imgElements = await Promise.all(
       images.map((image) => loadImage(image.url))
     );
@@ -38,7 +37,7 @@ async function downloadImages() {
     // ✅ Remove loading spinner
     loading.remove();
 
-    // ✅ Display images
+    // ✅ Display the images
     imgElements.forEach((img) => {
       output.appendChild(img);
     });
@@ -54,5 +53,5 @@ async function downloadImages() {
   }
 }
 
-// ✅ Start downloading images automatically on page load
-downloadImages();
+// ✅ Trigger download on button click
+btn.addEventListener("click", downloadImages);
